@@ -93,10 +93,33 @@ Write_Latch_DONE:
 	mov	pc, lr
 //-----------------------------------------------------------------------------------------------------
 Write_Clock:
+	cmp	r0, #0
+	beq	Clock_W_0
+	cmp	r0, #1
+	beq	Clock_W_1
+Clock_W_0:
+	ldr	r1, =0x3f200028
+	mov	r2, #1
+	lsl	r2, #11
+	str	r2, [r1]
+	b	Write_Clock_DONE
+Clock_W_1:	
+	ldr	r1, =0x3f20001c
+	mov	r2, #1
+	lsl	r2, #11
+	str	r2, [r1]	
 Write_Clock_DONE:
 	mov	pc,lr
 //-----------------------------------------------------------------------------------------------------
 Read_Data:
+	ldr	r1, =0x3f200034
+	ldr	r2, [r1]
+	mov	r3, #1
+	lsl	r3, #10
+	and	r2, r3
+	teq	r2, #0
+	moveq	r4, #0
+	movne	r4, #1
 Read_Data_DONE:
 	mov	pc, lr
 //-----------------------------------------------------------------------------------------------------
@@ -133,3 +156,27 @@ Names:
 	.ascii	"\r\nCreated by Aidan Kelly, Sodienye Nkwonta and Montasir Bechir Nasir\r\n"
 PleasePress:
 	.ascii	"\r\nPlease press a button...\r\n"
+PressB:
+	.ascii	"\r\nYou pressed B\r\n"
+PressY:
+	.ascii	"\r\nYou pressed Y\r\n"
+PressSelect:
+	.ascii	"\r\nYou pressed SELECT\r\n"
+PressDUp:
+	.ascii	"\r\nYou pressed D-Pad UP\r\n"
+PressDDown:
+	.ascii	"\r\nYou pressed D-Pad DOWN\r\n"
+PressDLeft:
+	.ascii	"\r\nYou pressed D-Pad LEFT\r\n"
+PressDRight:
+	.ascii	"\r\nYou pressed D-Pad RIGHT\r\n"
+PressA:
+	.ascii	"\r\nYou pressed A\r\n"
+PressX:
+	.ascii	"\r\nYou pressed X\r\n"
+PressLeft:
+	.ascii	"\r\nYou pressed LEFT\r\n"
+PressRight:
+	.ascii	"\r\nYou pressed RIGHT\r\n"
+TermMessage:
+	.ascii	"\r\nProgram is terminating...\r\n"
