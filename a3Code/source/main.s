@@ -17,11 +17,31 @@ main:
 	ldr	r0, =PleasePress
 	mov	r1, #28
 	bl	WriteStringUART
+
+	mov	r0, #9
+	mov	r1, #1
+	bl	Init_GPIO
+
+	mov	r0, #10
+	mov	r1, #0
+	bl	Init_GPIO
+
+	mov	r0, #11
+	mov	r1, #1
+	bl	Init_GPIO
+
+
+	bl	Read_SNES
+
+
+	
 	
 haltLoop$:
 	b	haltLoop$
 
 //-----------------------------------------------------------------------------------------------------
+//r0 = pin
+//r1 = function
 Init_GPIO:
 
 	cmp	r0, #9
@@ -73,6 +93,7 @@ Init_GPIO_DONE:
 	
 	mov	pc, lr
 //-----------------------------------------------------------------------------------------------------
+//r0 = what to write
 Write_Latch:
 	cmp	r0, #0
 	beq	Latch_W_0
@@ -123,6 +144,7 @@ Read_Data:
 Read_Data_DONE:
 	mov	pc, lr
 //-----------------------------------------------------------------------------------------------------
+//r0 = time in milliseconds
 Wait:
 	ldr	r1, =0x3f003004
 	ldr	r2, [r1]
@@ -135,6 +157,84 @@ Wait_DONE:
 	mov	pc, lr
 //-----------------------------------------------------------------------------------------------------
 Read_SNES:
+
+
+	mov	r0, #1
+	bl	Write_Clock
+
+startOfLoop:	
+
+	mov	r0, #1
+	bl	Write_Latch
+
+	mov	r0, #12
+	bl	Wait
+
+	mov	r0, #0
+	bl	Write_Latch
+	
+	
+	mov	r5, #0
+	mov	r7, #0
+pulseLoop:
+
+	
+	cmp	r5, #16
+	bge	pulseLoopDone
+	mov	r0, #6
+	bl	Wait
+
+	mov	r0, #0
+	bl	Write_Clock
+	
+	mov	r0, #6
+	bl	Wait
+
+	bl	Read_Data
+
+	lsl	r4, r5
+	orr	r7, r4
+	//store r4 somewhere
+
+
+
+
+	
+	add	r5, r5, #1
+	b	pulseLoop
+
+pulseLoopDone:	
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	b	startOfLoop
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
 Read_SNES_DONE:
 	mov	pc, lr
 //-----------------------------------------------------------------------------------------------------
