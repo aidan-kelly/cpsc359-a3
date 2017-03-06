@@ -30,11 +30,7 @@ main:
 	mov	r1, #1
 	bl	Init_GPIO
 
-
 	bl	Read_SNES
-
-
-	
 	
 haltLoop$:
 	b	haltLoop$
@@ -158,13 +154,11 @@ Wait_DONE:
 //-----------------------------------------------------------------------------------------------------
 Read_SNES:
 
-
+	mov	r0, #1
+	bl	Write_Clock
 
 
 startOfLoop:
-
-	mov	r0, #1
-	bl	Write_Clock
 
 	mov	r0, #1
 	bl	Write_Latch
@@ -183,6 +177,7 @@ pulseLoop:
 	
 	cmp	r5, #16
 	bge	pulseLoopDone
+
 	mov	r0, #6
 	bl	Wait
 
@@ -196,6 +191,9 @@ pulseLoop:
 
 	lsl	r4, r5
 	orr	r7, r4
+
+	mov	r0, #1
+	bl	Write_Clock
 	
 	add	r5, r5, #1
 	b	pulseLoop
@@ -220,38 +218,12 @@ topCheckLoop:
 
 	
 next:	
-	add	r5, #1
+	add	r5, r5, #1
 	b	topCheckLoop
 	
 CheckLoopDone:	
 
-
-
-
-
-
-
-
-
-
-
-	
 	b	startOfLoop
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	
 Read_SNES_DONE:
 	mov	pc, lr
@@ -264,7 +236,7 @@ Print_Message:
 	cmp	r0, #2
 	beq	SELPUSH
 	cmp	r0, #3
-	
+	beq	STAPUSH
 	cmp	r0, #4
 	beq	DUPPUSH
 	cmp	r0, #5
@@ -281,7 +253,7 @@ Print_Message:
 	beq	LEFTPUSH
 	cmp	r0, #11
 	beq	RIGHTPUSH
-
+	b	Print_Message_DONE	
 BPUSH:
 	ldr	r0, =PressB
 	mov	r1, #17
@@ -293,26 +265,62 @@ YPUSH:
 	mov	r1, #17
 	bl	WriteStringUART
 	b	Print_Message_DONE
-
-
 	
 SELPUSH:
+
+	ldr	r0, =PressSelect
+	mov	r1, #22
+	bl	WriteStringUART
+	b	Print_Message_DONE
 	
 DUPPUSH:
-	
+	ldr	r0, =PressDUp
+	mov	r1, #24
+	bl	WriteStringUART
+	b	Print_Message_DONE
 DDOWNPUSH:
+	ldr	r0, =PressDDown
+	mov	r1, #26
+	bl	WriteStringUART
+	b	Print_Message_DONE
 	
 DLEFTPUSH:
-	
+	ldr	r0, =PressDLeft
+	mov	r1, #26
+	bl	WriteStringUART
+	b	Print_Message_DONE
 DRIGHTPUSH:
-	
+	ldr	r0, =PressDRight
+	mov	r1, #27
+	bl	WriteStringUART
+	b	Print_Message_DONE
 APUSH:
+	ldr	r0, =PressA
+	mov	r1, #17
+	bl	WriteStringUART
+	b	Print_Message_DONE
 	
 XPUSH:
+	ldr	r0, =PressX
+	mov	r1, #17
+	bl	WriteStringUART
+	b	Print_Message_DONE
 	
 LEFTPUSH:
-	
-RIGHTPUSH:	
+	ldr	r0, =PressLeft
+	mov	r1, #20
+	bl	WriteStringUART
+	b	Print_Message_DONE
+RIGHTPUSH:
+	ldr	r0, =PressRight
+	mov	r1, #21
+	bl	WriteStringUART
+	b	Print_Message_DONE
+STAPUSH:
+	ldr	r0, =TermMessage
+	mov	r1, #29
+	bl	WriteStringUART
+	b	haltLoop$
 
 Print_Message_DONE:
 	mov	pc, lr
