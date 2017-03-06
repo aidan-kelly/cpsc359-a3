@@ -159,10 +159,12 @@ Wait_DONE:
 Read_SNES:
 
 
+
+
+startOfLoop:
+
 	mov	r0, #1
 	bl	Write_Clock
-
-startOfLoop:	
 
 	mov	r0, #1
 	bl	Write_Latch
@@ -194,18 +196,34 @@ pulseLoop:
 
 	lsl	r4, r5
 	orr	r7, r4
-	//store r4 somewhere
-
-
-
-
 	
 	add	r5, r5, #1
 	b	pulseLoop
 
 pulseLoopDone:	
 
+	mov	r5, #0
+topCheckLoop:
+	cmp	r5, #16
+	bge	CheckLoopDone
 
+	mov	r6, #1
+	lsl	r6, r5
+
+	and	r8, r6, r7
+
+	cmp	r8, #0
+	bne	next
+
+	mov	r0, r5
+	bl	Print_Message
+
+	
+next:	
+	add	r5, #1
+	b	topCheckLoop
+	
+CheckLoopDone:	
 
 
 
@@ -239,6 +257,63 @@ Read_SNES_DONE:
 	mov	pc, lr
 //-----------------------------------------------------------------------------------------------------
 Print_Message:
+	cmp	r0, #0
+	beq	BPUSH
+	cmp	r0, #1
+	beq	YPUSH
+	cmp	r0, #2
+	beq	SELPUSH
+	cmp	r0, #3
+	
+	cmp	r0, #4
+	beq	DUPPUSH
+	cmp	r0, #5
+	beq	DDOWNPUSH
+	cmp	r0, #6
+	beq	DLEFTPUSH
+	cmp	r0, #7
+	beq	DRIGHTPUSH
+	cmp	r0, #8
+	beq	APUSH
+	cmp	r0, #9
+	beq	XPUSH
+	cmp	r0, #10
+	beq	LEFTPUSH
+	cmp	r0, #11
+	beq	RIGHTPUSH
+
+BPUSH:
+	ldr	r0, =PressB
+	mov	r1, #17
+	bl	WriteStringUART
+	b	Print_Message_DONE
+YPUSH:
+
+	ldr	r0, =PressY
+	mov	r1, #17
+	bl	WriteStringUART
+	b	Print_Message_DONE
+
+
+	
+SELPUSH:
+	
+DUPPUSH:
+	
+DDOWNPUSH:
+	
+DLEFTPUSH:
+	
+DRIGHTPUSH:
+	
+APUSH:
+	
+XPUSH:
+	
+LEFTPUSH:
+	
+RIGHTPUSH:	
+
 Print_Message_DONE:
 	mov	pc, lr
 //-----------------------------------------------------------------------------------------------------
