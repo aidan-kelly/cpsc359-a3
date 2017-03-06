@@ -140,7 +140,7 @@ Read_Data:
 Read_Data_DONE:
 	mov	pc, lr
 //-----------------------------------------------------------------------------------------------------
-//r0 = time in milliseconds
+//r0 = time in microseconds
 Wait:
 	ldr	r1, =0x3f003004
 	ldr	r2, [r1]
@@ -202,28 +202,136 @@ pulseLoop:
 	add	r5, r5, #1
 	b	pulseLoop
 
+
 pulseLoopDone:	
 
-	mov	r5, #0
+//PROBLEM ALSO IN HERE SOMEWHERE
+	
 topCheckLoop:
-	cmp	r5, #16
-	bge	CheckLoopDone
+	mov	r6, #1
+	lsl	r6, #0
+	and	r8, r6, r7
+	cmp	r8, #0
+	bne	next1
+
+	ldr	r0, =PressB
+	mov	r1, #17
+	bl	WriteStringUART
+next1:	
+	mov	r6, #1
+	lsl	r6, #1
+	and	r8, r6, r7
+	cmp	r8, #0
+	bne	next2
+
+	ldr	r0, =PressY
+	mov	r1, #17
+	bl	WriteStringUART
+next2:
+	mov	r6, #1
+	lsl	r6, #2
+	and	r8, r6, r7
+	cmp	r8, #0
+	bne	next3
+
+	ldr	r0, =PressSelect
+	mov	r1, #22
+	bl	WriteStringUART
+next3:
 
 	mov	r6, #1
-	lsl	r6, r5
-
+	lsl	r6, #3
 	and	r8, r6, r7
-
 	cmp	r8, #0
-	bne	next
+	bne	next4
 
-	mov	r0, r5
-	bl	Print_Message
-	
-next:	
-	add	r5, r5, #1
-	b	topCheckLoop
-	
+	ldr	r0, =TermMessage
+	mov	r1, #29
+	bl	WriteStringUART
+	b	haltLoop$
+next4:
+
+	mov	r6, #1
+	lsl	r6, #4
+	and	r8, r6, r7
+	cmp	r8, #0
+	bne	next5
+
+	ldr	r0, =PressDUp
+	mov	r1, #24
+	bl	WriteStringUART
+next5:
+	mov	r6, #1
+	lsl	r6, #5
+	and	r8, r6, r7
+	cmp	r8, #0
+	bne	next6
+
+	ldr	r0, =PressDDown
+	mov	r1, #26
+	bl	WriteStringUART
+next6:
+	mov	r6, #1
+	lsl	r6, #6
+	and	r8, r6, r7
+	cmp	r8, #0
+	bne	next7
+
+	ldr	r0, =PressDLeft
+	mov	r1, #26
+	bl	WriteStringUART
+next7:
+	mov	r6, #1
+	lsl	r6, #7
+	and	r8, r6, r7
+	cmp	r8, #0
+	bne	next8
+
+	ldr	r0, =PressDRight
+	mov	r1, #27
+	bl	WriteStringUART
+next8:
+	mov	r6, #1
+	lsl	r6, #8
+	and	r8, r6, r7
+	cmp	r8, #0
+	bne	next9
+
+	ldr	r0, =PressA
+	mov	r1, #17
+	bl	WriteStringUART
+next9:
+	mov	r6, #1
+	lsl	r6, #9
+	and	r8, r6, r7
+	cmp	r8, #0
+	bne	next10
+
+	ldr	r0, =PressX
+	mov	r1, #17
+	bl	WriteStringUART
+next10:
+	mov	r6, #1
+	lsl	r6, #10
+	and	r8, r6, r7
+	cmp	r8, #0
+	bne	next11
+
+	ldr	r0, =PressLeft
+	mov	r1, #20
+	bl	WriteStringUART
+next11:
+	mov	r6, #1
+	lsl	r6, #11
+	and	r8, r6, r7
+	cmp	r8, #0
+	bne	next12
+
+	ldr	r0, =PressRight
+	mov	r1, #21
+	bl	WriteStringUART
+next12:	
+		
 CheckLoopDone:	
 
 	b	startOfLoop
