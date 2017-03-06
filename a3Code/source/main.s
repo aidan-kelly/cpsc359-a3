@@ -7,8 +7,8 @@ _start:
 .section .text
 
 main:
-    	mov     	sp, #0x8000 // Initializing the stack pointer
-	bl		EnableJTAG // Enable JTAG
+    	mov     sp, #0x8000 // Initializing the stack pointer
+	bl	EnableJTAG // Enable JTAG
 	bl	InitUART
 
 	ldr	r0, =Names
@@ -30,11 +30,7 @@ main:
 	mov	r1, #1
 	bl	Init_GPIO
 
-
 	bl	Read_SNES
-
-
-	
 	
 haltLoop$:
 	b	haltLoop$
@@ -144,7 +140,7 @@ Read_Data:
 Read_Data_DONE:
 	mov	pc, lr
 //-----------------------------------------------------------------------------------------------------
-//r0 = time in milliseconds
+//r0 = time in microseconds
 Wait:
 	ldr	r1, =0x3f003004
 	ldr	r2, [r1]
@@ -158,14 +154,12 @@ Wait_DONE:
 //-----------------------------------------------------------------------------------------------------
 Read_SNES:
 
-
-
-
-startOfLoop:
-
 	mov	r0, #1
 	bl	Write_Clock
+	mov	r9, #0
 
+startOfLoop:
+	
 	mov	r0, #1
 	bl	Write_Latch
 
@@ -179,10 +173,10 @@ startOfLoop:
 	mov	r5, #0
 	mov	r7, #0
 pulseLoop:
-
 	
 	cmp	r5, #16
 	bge	pulseLoopDone
+
 	mov	r0, #6
 	bl	Wait
 
@@ -196,92 +190,225 @@ pulseLoop:
 
 	lsl	r4, r5
 	orr	r7, r4
+
+	mov	r0, #1
+	bl	Write_Clock
 	
 	add	r5, r5, #1
 	b	pulseLoop
 
 pulseLoopDone:	
 
-	mov	r5, #0
+	cmp	r9, r7
+	beq	startOfLoop
+	mov	r9, r7
+//PROBLEM ALSO IN HERE SOMEWHERE
+	
 topCheckLoop:
-	cmp	r5, #16
-	bge	CheckLoopDone
+	mov	r6, #1
+	lsl	r6, #0
+	and	r8, r6, r7
+	cmp	r8, #0
+	bne	next1
+
+	ldr	r0, =PressB
+	mov	r1, #17
+	bl	WriteStringUART
+	ldr	r0, =PleasePress
+	mov	r1, #28
+	bl	WriteStringUART
+	
+next1:	
+	mov	r6, #1
+	lsl	r6, #1
+	and	r8, r6, r7
+	cmp	r8, #0
+	bne	next2
+
+	ldr	r0, =PressY
+	mov	r1, #17
+	bl	WriteStringUART
+	ldr	r0, =PleasePress
+	mov	r1, #28
+	bl	WriteStringUART
+next2:
+	mov	r6, #1
+	lsl	r6, #2
+	and	r8, r6, r7
+	cmp	r8, #0
+	bne	next3
+
+	ldr	r0, =PressSelect
+	mov	r1, #22
+	bl	WriteStringUART
+	ldr	r0, =PleasePress
+	mov	r1, #28
+	bl	WriteStringUART
+next3:
 
 	mov	r6, #1
-	lsl	r6, r5
-
+	lsl	r6, #3
 	and	r8, r6, r7
-
 	cmp	r8, #0
-	bne	next
+	bne	next4
 
-	mov	r0, r5
-	bl	Print_Message
+	ldr	r0, =TermMessage
+	mov	r1, #29
+	bl	WriteStringUART
+	b	haltLoop$
+next4:
 
-	
-next:	
-	add	r5, #1
-	b	topCheckLoop
-	
+	mov	r6, #1
+	lsl	r6, #4
+	and	r8, r6, r7
+	cmp	r8, #0
+	bne	next5
+
+	ldr	r0, =PressDUp
+	mov	r1, #24
+	bl	WriteStringUART
+	ldr	r0, =PleasePress
+	mov	r1, #28
+	bl	WriteStringUART
+next5:
+	mov	r6, #1
+	lsl	r6, #5
+	and	r8, r6, r7
+	cmp	r8, #0
+	bne	next6
+
+	ldr	r0, =PressDDown
+	mov	r1, #26
+	bl	WriteStringUART
+	ldr	r0, =PleasePress
+	mov	r1, #28
+	bl	WriteStringUART
+next6:
+	mov	r6, #1
+	lsl	r6, #6
+	and	r8, r6, r7
+	cmp	r8, #0
+	bne	next7
+
+	ldr	r0, =PressDLeft
+	mov	r1, #26
+	bl	WriteStringUART
+	ldr	r0, =PleasePress
+	mov	r1, #28
+	bl	WriteStringUART
+next7:
+	mov	r6, #1
+	lsl	r6, #7
+	and	r8, r6, r7
+	cmp	r8, #0
+	bne	next8
+
+	ldr	r0, =PressDRight
+	mov	r1, #27
+	bl	WriteStringUART
+	ldr	r0, =PleasePress
+	mov	r1, #28
+	bl	WriteStringUART
+next8:
+	mov	r6, #1
+	lsl	r6, #8
+	and	r8, r6, r7
+	cmp	r8, #0
+	bne	next9
+
+	ldr	r0, =PressA
+	mov	r1, #17
+	bl	WriteStringUART
+	ldr	r0, =PleasePress
+	mov	r1, #28
+	bl	WriteStringUART
+next9:
+	mov	r6, #1
+	lsl	r6, #9
+	and	r8, r6, r7
+	cmp	r8, #0
+	bne	next10
+
+	ldr	r0, =PressX
+	mov	r1, #17
+	bl	WriteStringUART
+	ldr	r0, =PleasePress
+	mov	r1, #28
+	bl	WriteStringUART
+next10:
+	mov	r6, #1
+	lsl	r6, #10
+	and	r8, r6, r7
+	cmp	r8, #0
+	bne	next11
+
+	ldr	r0, =PressLeft
+	mov	r1, #20
+	bl	WriteStringUART
+	ldr	r0, =PleasePress
+	mov	r1, #28
+	bl	WriteStringUART
+next11:
+	mov	r6, #1
+	lsl	r6, #11
+	and	r8, r6, r7
+	cmp	r8, #0
+	bne	next12
+
+	ldr	r0, =PressRight
+	mov	r1, #21
+	bl	WriteStringUART
+	ldr	r0, =PleasePress
+	mov	r1, #28
+	bl	WriteStringUART
+next12:	
+		
 CheckLoopDone:	
 
-
-
-
-
-
-
-
-
-
-
-	
 	b	startOfLoop
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	
 Read_SNES_DONE:
 	mov	pc, lr
 //-----------------------------------------------------------------------------------------------------
+//WEIRD PROBLEM LIES WITHIN
 Print_Message:
 	cmp	r0, #0
 	beq	BPUSH
+	
 	cmp	r0, #1
 	beq	YPUSH
+	
 	cmp	r0, #2
 	beq	SELPUSH
+	
 	cmp	r0, #3
+	beq	STAPUSH
 	
 	cmp	r0, #4
 	beq	DUPPUSH
+	
 	cmp	r0, #5
 	beq	DDOWNPUSH
+	
 	cmp	r0, #6
 	beq	DLEFTPUSH
+	
 	cmp	r0, #7
 	beq	DRIGHTPUSH
+	
 	cmp	r0, #8
 	beq	APUSH
+	
 	cmp	r0, #9
 	beq	XPUSH
+	
 	cmp	r0, #10
 	beq	LEFTPUSH
+	
 	cmp	r0, #11
 	beq	RIGHTPUSH
-
+	
+	b	Print_Message_DONE	
 BPUSH:
 	ldr	r0, =PressB
 	mov	r1, #17
@@ -293,26 +420,62 @@ YPUSH:
 	mov	r1, #17
 	bl	WriteStringUART
 	b	Print_Message_DONE
-
-
 	
 SELPUSH:
+
+	ldr	r0, =PressSelect
+	mov	r1, #22
+	bl	WriteStringUART
+	b	Print_Message_DONE
 	
 DUPPUSH:
-	
+	ldr	r0, =PressDUp
+	mov	r1, #24
+	bl	WriteStringUART
+	b	Print_Message_DONE
 DDOWNPUSH:
+	ldr	r0, =PressDDown
+	mov	r1, #26
+	bl	WriteStringUART
+	b	Print_Message_DONE
 	
 DLEFTPUSH:
-	
+	ldr	r0, =PressDLeft
+	mov	r1, #26
+	bl	WriteStringUART
+	b	Print_Message_DONE
 DRIGHTPUSH:
-	
+	ldr	r0, =PressDRight
+	mov	r1, #27
+	bl	WriteStringUART
+	b	Print_Message_DONE
 APUSH:
+	ldr	r0, =PressA
+	mov	r1, #17
+	bl	WriteStringUART
+	b	Print_Message_DONE
 	
 XPUSH:
+	ldr	r0, =PressX
+	mov	r1, #17
+	bl	WriteStringUART
+	b	Print_Message_DONE
 	
 LEFTPUSH:
-	
-RIGHTPUSH:	
+	ldr	r0, =PressLeft
+	mov	r1, #20
+	bl	WriteStringUART
+	b	Print_Message_DONE
+RIGHTPUSH:
+	ldr	r0, =PressRight
+	mov	r1, #21
+	bl	WriteStringUART
+	b	Print_Message_DONE
+STAPUSH:
+	ldr	r0, =TermMessage
+	mov	r1, #29
+	bl	WriteStringUART
+	b	haltLoop$
 
 Print_Message_DONE:
 	mov	pc, lr
