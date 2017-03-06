@@ -7,8 +7,8 @@ _start:
 .section .text
 
 main:
-    	mov     	sp, #0x8000 // Initializing the stack pointer
-	bl		EnableJTAG // Enable JTAG
+    	mov     sp, #0x8000 // Initializing the stack pointer
+	bl	EnableJTAG // Enable JTAG
 	bl	InitUART
 
 	ldr	r0, =Names
@@ -156,13 +156,9 @@ Read_SNES:
 
 	mov	r0, #1
 	bl	Write_Clock
-
+	mov	r9, #0
 
 startOfLoop:
-
-//	ldr	r0, =PressB
-//	mov	r1, #17
-//	bl	WriteStringUART
 	
 	mov	r0, #1
 	bl	Write_Latch
@@ -176,7 +172,6 @@ startOfLoop:
 	
 	mov	r5, #0
 	mov	r7, #0
-	
 pulseLoop:
 	
 	cmp	r5, #16
@@ -202,9 +197,11 @@ pulseLoop:
 	add	r5, r5, #1
 	b	pulseLoop
 
-
 pulseLoopDone:	
 
+	cmp	r9, r7
+	beq	startOfLoop
+	mov	r9, r7
 //PROBLEM ALSO IN HERE SOMEWHERE
 	
 topCheckLoop:
@@ -217,6 +214,10 @@ topCheckLoop:
 	ldr	r0, =PressB
 	mov	r1, #17
 	bl	WriteStringUART
+	ldr	r0, =PleasePress
+	mov	r1, #28
+	bl	WriteStringUART
+	
 next1:	
 	mov	r6, #1
 	lsl	r6, #1
@@ -227,6 +228,9 @@ next1:
 	ldr	r0, =PressY
 	mov	r1, #17
 	bl	WriteStringUART
+	ldr	r0, =PleasePress
+	mov	r1, #28
+	bl	WriteStringUART
 next2:
 	mov	r6, #1
 	lsl	r6, #2
@@ -236,6 +240,9 @@ next2:
 
 	ldr	r0, =PressSelect
 	mov	r1, #22
+	bl	WriteStringUART
+	ldr	r0, =PleasePress
+	mov	r1, #28
 	bl	WriteStringUART
 next3:
 
@@ -260,6 +267,9 @@ next4:
 	ldr	r0, =PressDUp
 	mov	r1, #24
 	bl	WriteStringUART
+	ldr	r0, =PleasePress
+	mov	r1, #28
+	bl	WriteStringUART
 next5:
 	mov	r6, #1
 	lsl	r6, #5
@@ -269,6 +279,9 @@ next5:
 
 	ldr	r0, =PressDDown
 	mov	r1, #26
+	bl	WriteStringUART
+	ldr	r0, =PleasePress
+	mov	r1, #28
 	bl	WriteStringUART
 next6:
 	mov	r6, #1
@@ -280,6 +293,9 @@ next6:
 	ldr	r0, =PressDLeft
 	mov	r1, #26
 	bl	WriteStringUART
+	ldr	r0, =PleasePress
+	mov	r1, #28
+	bl	WriteStringUART
 next7:
 	mov	r6, #1
 	lsl	r6, #7
@@ -289,6 +305,9 @@ next7:
 
 	ldr	r0, =PressDRight
 	mov	r1, #27
+	bl	WriteStringUART
+	ldr	r0, =PleasePress
+	mov	r1, #28
 	bl	WriteStringUART
 next8:
 	mov	r6, #1
@@ -300,6 +319,9 @@ next8:
 	ldr	r0, =PressA
 	mov	r1, #17
 	bl	WriteStringUART
+	ldr	r0, =PleasePress
+	mov	r1, #28
+	bl	WriteStringUART
 next9:
 	mov	r6, #1
 	lsl	r6, #9
@@ -309,6 +331,9 @@ next9:
 
 	ldr	r0, =PressX
 	mov	r1, #17
+	bl	WriteStringUART
+	ldr	r0, =PleasePress
+	mov	r1, #28
 	bl	WriteStringUART
 next10:
 	mov	r6, #1
@@ -320,6 +345,9 @@ next10:
 	ldr	r0, =PressLeft
 	mov	r1, #20
 	bl	WriteStringUART
+	ldr	r0, =PleasePress
+	mov	r1, #28
+	bl	WriteStringUART
 next11:
 	mov	r6, #1
 	lsl	r6, #11
@@ -329,6 +357,9 @@ next11:
 
 	ldr	r0, =PressRight
 	mov	r1, #21
+	bl	WriteStringUART
+	ldr	r0, =PleasePress
+	mov	r1, #28
 	bl	WriteStringUART
 next12:	
 		
