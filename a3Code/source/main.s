@@ -160,6 +160,10 @@ Read_SNES:
 
 startOfLoop:
 
+//	ldr	r0, =PressB
+//	mov	r1, #17
+//	bl	WriteStringUART
+	
 	mov	r0, #1
 	bl	Write_Latch
 
@@ -172,8 +176,8 @@ startOfLoop:
 	
 	mov	r5, #0
 	mov	r7, #0
+	
 pulseLoop:
-
 	
 	cmp	r5, #16
 	bge	pulseLoopDone
@@ -215,7 +219,6 @@ topCheckLoop:
 
 	mov	r0, r5
 	bl	Print_Message
-
 	
 next:	
 	add	r5, r5, #1
@@ -228,31 +231,44 @@ CheckLoopDone:
 Read_SNES_DONE:
 	mov	pc, lr
 //-----------------------------------------------------------------------------------------------------
+//WEIRD PROBLEM LIES WITHIN
 Print_Message:
 	cmp	r0, #0
 	beq	BPUSH
+	
 	cmp	r0, #1
 	beq	YPUSH
+	
 	cmp	r0, #2
 	beq	SELPUSH
+	
 	cmp	r0, #3
 	beq	STAPUSH
+	
 	cmp	r0, #4
 	beq	DUPPUSH
+	
 	cmp	r0, #5
 	beq	DDOWNPUSH
+	
 	cmp	r0, #6
 	beq	DLEFTPUSH
+	
 	cmp	r0, #7
 	beq	DRIGHTPUSH
+	
 	cmp	r0, #8
 	beq	APUSH
+	
 	cmp	r0, #9
 	beq	XPUSH
+	
 	cmp	r0, #10
 	beq	LEFTPUSH
+	
 	cmp	r0, #11
 	beq	RIGHTPUSH
+	
 	b	Print_Message_DONE	
 BPUSH:
 	ldr	r0, =PressB

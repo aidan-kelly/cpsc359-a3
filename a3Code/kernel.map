@@ -81,11 +81,11 @@ OUTPUT(build/output.elf elf32-littlearm)
  .ARM.attributes
                 0x0000007b       0x29 gpio.o
 
-.debug_line     0x00000000      0x2d2
- .debug_line    0x00000000      0x141 build/main.o
- .debug_line    0x00000141       0x61 build/jtag.o
- .debug_line    0x000001a2       0xb7 uart.o
- .debug_line    0x00000259       0x79 gpio.o
+.debug_line     0x00000000      0x2d4
+ .debug_line    0x00000000      0x143 build/main.o
+ .debug_line    0x00000143       0x61 build/jtag.o
+ .debug_line    0x000001a4       0xb7 uart.o
+ .debug_line    0x0000025b       0x79 gpio.o
 
 .debug_info     0x00000000      0x192
  .debug_info    0x00000000       0x5a build/main.o
